@@ -1,0 +1,19 @@
+{
+  "name": "onair",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon SERVER/server.js",
+    "client": "npm start --prefix CLIENT",
+    "dev": "concurrently \"npm run start\" \"npm run client\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "concurrently": "^9.2.0",
+    "express": "^5.1.0"
+  }
+}
