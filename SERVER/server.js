@@ -1,6 +1,6 @@
 const http = require("http");
 const { Server } = require("socket.io");
-const app = require("./app");
+const app = require("./app"); // Express app
 const dotenv = require("dotenv");
 const { port } = require("./config");
 
@@ -10,54 +10,67 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "http://localhost:5173", // Adjust to your frontend
     credentials: true,
   },
 });
 
-// Map<roomId, Map<email, { socketId, name }>>
+// Map<roomId, Map<email, { socketId, name, email }>>
 const rooms = new Map();
-// i want rooms to be a
 
 io.on("connection", (socket) => {
   console.log("🔌 New client connected:", socket.id);
 
+  // ========== JOIN ROOM ==========
   socket.on("join", ({ roomId, name, email }) => {
-    console.log(
-      `🧍 User ${email} (${name}) joined room ${roomId} with socket ${socket.id}`
-    );
-    socket.join(roomId);
+    console.log(`📥 ${email} (${name}) joined room ${roomId} with socket ${socket.id}`);
 
-    // Initialize room if not present
+    // Store user info in socket
+    socket.data.email = email;
+    socket.data.name = name;
+    socket.data.roomId = roomId;
+
+    // Ensure room exists
     if (!rooms.has(roomId)) {
       rooms.set(roomId, new Map());
     }
 
     const userMap = rooms.get(roomId);
 
-    // Prevent duplicate emails
+    // Check if email already exists in this room
     if (userMap.has(email)) {
-      const existingUser = userMap.get(email);
-      socket.emit("duplicate-user", {
-        message: "Email already exists in this room.",
-      });
-      console.warn(`⚠️ Email ${email} already joined in room ${roomId}`);
+      socket.emit("error", { message: "Email already joined in this room" });
       return;
     }
 
-    userMap.set(email, { socketId: socket.id, name });
+    // Store user in room
+    userMap.set(email, {
+      socketId: socket.id,
+      name,
+      email,
+    });
 
-    // Send all current users to the newly joined user
-    const otherUsers = Array.from(userMap.values())
-      .filter((u) => u.socketId !== socket.id)
-      .map((u) => u.socketId);
+    socket.join(roomId);
+
+    // Inform new user about others
+    const otherUsers = Array.from(userMap.entries())
+      .filter(([otherEmail]) => otherEmail !== email)
+      .map(([_, user]) => ({
+        socketId: user.socketId,
+        name: user.name,
+        email: user.email,
+      }));
 
     socket.emit("all-users", otherUsers);
 
-    //Notify other users in the room
-    socket.to(roomId).emit("user-joined", socket.id);
+    // Notify others about new user
+    socket.to(roomId).emit("user-joined", {
+      socketId: socket.id,
+      name,
+      email,
+    });
 
-    console.log("✅ Room state:");
+    console.log("✅ Current Room State:");
     console.log(
       JSON.stringify(
         Array.from(rooms.entries()).reduce((acc, [rid, map]) => {
@@ -70,41 +83,45 @@ io.on("connection", (socket) => {
     );
   });
 
-  socket.on("offer", ({ to, offer }) => {
-    io.to(to).emit("offer", { from: socket.id, offer });
+  // ========== SIGNALING (Offer, Answer, ICE) ==========
+  socket.on("signal", ({ type, to, offer, answer, candidate }) => {
+    const payload = { from: socket.id };
+
+    if (type === "offer") payload.offer = offer;
+    else if (type === "answer") payload.answer = answer;
+    else if (type === "ice-candidate") payload.candidate = candidate;
+
+    io.to(to).emit("signal", { type, ...payload });
   });
 
-  socket.on("answer", ({ to, answer }) => {
-    io.to(to).emit("answer", { from: socket.id, answer });
+  // ========== MANUAL LEAVE ==========
+  socket.on("user-left", ({ roomId }) => {
+    console.log("👋 User manually left room:", roomId, "Socket ID:", socket.id);
+    socket.to(roomId).emit("user-left", socket.id);
   });
 
-  socket.on("ice-candidate", ({ to, candidate }) => {
-    io.to(to).emit("ice-candidate", { from: socket.id, candidate });
-  });
-
+  // ========== DISCONNECT ==========
   socket.on("disconnect", () => {
     console.log("❌ Client disconnected:", socket.id);
 
-    for (const [roomId, userMap] of rooms.entries()) {
-      for (const [email, user] of userMap.entries()) {
-        if (user.socketId === socket.id) {
-          userMap.delete(email);
-          socket.to(roomId).emit("user-left", socket.id);
-          console.log(`🧹 Removed ${email} from room ${roomId}`);
-          break;
-        }
-      }
+    const roomId = socket.data.roomId;
+    const email = socket.data.email;
 
-      // Clean empty room
-      if (userMap.size === 0) {
-        rooms.delete(roomId);
-        console.log(`🗑️ Deleted empty room ${roomId}`);
-      }
+    if (!roomId || !rooms.has(roomId)) return;
+
+    const userMap = rooms.get(roomId);
+    userMap.delete(email);
+
+    socket.to(roomId).emit("user-left", socket.id);
+    console.log(`🧹 Removed ${email} from room ${roomId}`);
+
+    if (userMap.size === 0) {
+      rooms.delete(roomId);
+      console.log(`🗑️ Deleted empty room ${roomId}`);
     }
-    
   });
 });
 
 server.listen(port, () => {
-  console.log(`🚀 Server running on http://localhost:${port}`);
+  console.log(`🚀 Server running at http://localhost:${port}`);
 });

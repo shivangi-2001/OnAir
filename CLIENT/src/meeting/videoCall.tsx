@@ -16,76 +16,188 @@ interface Props {
 const socket: Socket = io("http://localhost:8000");
 
 const ICE_SERVERS: RTCConfiguration = {
-  iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+  iceServers: [
+    { urls: "stun:stun.l.google.com:19302" },
+    {
+      urls: "turn:numb.viagenie.ca",
+      credential: "muazkh",
+      username: "webrtc@live.com",
+    },
+  ],
 };
 
 const VideoCall: React.FC<Props> = ({ roomId }) => {
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
   const peerConnections = useRef<Map<string, RTCPeerConnection>>(new Map());
-  const [remoteStreams, setRemoteStreams] = useState<Map<string, MediaStream>>(
-    new Map()
-  );
+  const emailToSocket = useRef<Map<string, string>>(new Map());
 
+  const [remoteStreams, setRemoteStreams] = useState<Map<string, MediaStream>>(new Map());
+  const [userNames, setUserNames] = useState<Map<string, string>>(new Map());
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCameraOn, setIsCameraOn] = useState(true);
 
   const { user } = useAuth();
   const { meetingId } = useParams();
 
+  const createPeerConnection = (userId: string): RTCPeerConnection => {
+    if (peerConnections.current.has(userId)) {
+      return peerConnections.current.get(userId)!;
+    }
+
+    const pc = new RTCPeerConnection(ICE_SERVERS);
+
+    pc.onicecandidate = (event) => {
+      if (event.candidate) {
+        socket.emit("signal", {
+          type: "ice-candidate",
+          to: userId,
+          candidate: event.candidate,
+        });
+      }
+    };
+
+    pc.ontrack = (event) => {
+      const remoteStream = event.streams[0];
+      if (remoteStream) {
+        setRemoteStreams((prev) => {
+          const updated = new Map(prev);
+          updated.set(userId, remoteStream);
+          return updated;
+        });
+      }
+    };
+
+    peerConnections.current.set(userId, pc);
+    return pc;
+  };
+
+  const cleanupOldSocket = (email: string) => {
+    const oldSocketId = emailToSocket.current.get(email);
+    if (oldSocketId) {
+      peerConnections.current.get(oldSocketId)?.close();
+      peerConnections.current.delete(oldSocketId);
+      // setRemoteStreams((prev) => {
+      //   const updated = new Map(prev);
+      //   updated.delete(oldSocketId);
+      //   return updated;
+      // });
+      setUserNames((prev) => {
+        console.log(prev);
+        const updated = new Map(prev);
+        updated.delete(oldSocketId);
+        return updated;
+      });
+    }
+  };
+
+  const handleOffer = async (from: string, offer: RTCSessionDescriptionInit, stream: MediaStream) => {
+    const pc = createPeerConnection(from);
+    await pc.setRemoteDescription(new RTCSessionDescription(offer));
+    const answer = await pc.createAnswer();
+    await pc.setLocalDescription(answer);
+    if (pc.getSenders().length === 0) {
+      stream.getTracks().forEach((track) => pc.addTrack(track, stream));
+    }
+    socket.emit("signal", { type: "answer", to: from, answer });
+  };
+
+  const handleAnswer = async (from: string, answer: RTCSessionDescriptionInit) => {
+    const pc = peerConnections.current.get(from);
+    if (pc && pc.signalingState === "have-local-offer") {
+      await pc.setRemoteDescription(new RTCSessionDescription(answer));
+    }
+  };
+
+  const handleIceCandidate = async (from: string, candidate: RTCIceCandidateInit) => {
+    const pc = peerConnections.current.get(from);
+    if (pc && candidate) {
+      await pc.addIceCandidate(new RTCIceCandidate(candidate));
+    }
+  };
+
+
+
+  console.log("remote video: ",remoteStreams);
+  console.log("name: ",userNames);
+
   useEffect(() => {
     const start = async () => {
-      const localStream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
-      localStreamRef.current = localStream;
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      localStreamRef.current = stream;
+      if (localVideoRef.current) localVideoRef.current.srcObject = stream;
 
-      if (localVideoRef.current) {
-        localVideoRef.current.srcObject = localStream;
-      }
+      socket.emit("join", { roomId, name: user?.name, email: user?.email });
 
-      socket.emit("join",{ roomId, name:user?.name, email: user?.email});
-
-      socket.on("all-users", (otherUser)=>{
-        console.log(otherUser);
-      })
-
-      socket.on("user-joined", async (otherUserId: string) => {
-        const pc = createPeerConnection(otherUserId);
-        localStream
-          .getTracks()
-          .forEach((track) => pc.addTrack(track, localStream));
-
-        const offer = await pc.createOffer();
-        await pc.setLocalDescription(offer);
-
-        socket.emit("offer", { to: otherUserId, offer });
+      socket.on("all-users", (users: { socketId: string; name: string; email: string }[]) => {
+        const nameMap = new Map(userNames);
+        users.forEach(({ socketId, name, email }) => {
+          cleanupOldSocket(email);
+          emailToSocket.current.set(email, socketId);
+          const pc = createPeerConnection(socketId);
+          if (pc.getSenders().length === 0) {
+            stream.getTracks().forEach((track) => pc.addTrack(track, stream));
+          }
+          pc.createOffer().then((offer) => {
+            pc.setLocalDescription(offer);
+            socket.emit("signal", { type: "offer", to: socketId, offer });
+          });
+          nameMap.set(socketId, name);
+        });
+        setUserNames(nameMap);
       });
 
-      socket.on("offer", async ({ from, offer }) => {
-        const pc = createPeerConnection(from);
-        localStream
-          .getTracks()
-          .forEach((track) => pc.addTrack(track, localStream));
+      socket.on("user-joined", ({ socketId, name, email }) => {
+        cleanupOldSocket(email);
+        emailToSocket.current.set(email, socketId);
+        const pc = createPeerConnection(socketId);
 
-        await pc.setRemoteDescription(new RTCSessionDescription(offer));
-        const answer = await pc.createAnswer();
-        await pc.setLocalDescription(answer);
-
-        socket.emit("answer", { to: from, answer });
+        stream.getTracks().forEach((track) => pc.addTrack(track, stream));
+        pc.createOffer().then((offer) => {
+          pc.setLocalDescription(offer);
+          socket.emit("signal", { type: "offer", to: socketId, offer });
+        });
+        setUserNames((prev) => new Map(prev).set(socketId, name));
       });
 
-      socket.on("answer", async ({ from, answer }) => {
-        const pc = peerConnections.current.get(from);
-        if (pc)
-          await pc.setRemoteDescription(new RTCSessionDescription(answer));
+      socket.on("signal", async (data) => {
+        const { type, from, offer, answer, candidate } = data;
+        switch (type) {
+          case "offer":
+            await handleOffer(from, offer, stream);
+            break;
+          case "answer":
+            await handleAnswer(from, answer);
+            break;
+          case "ice-candidate":
+            await handleIceCandidate(from, candidate);
+            break;
+          default:
+            console.warn("Unknown signal type:", type);
+        }
       });
 
-      socket.on("ice-candidate", async ({ from, candidate }) => {
-        const pc = peerConnections.current.get(from);
-        if (pc && candidate)
-          await pc.addIceCandidate(new RTCIceCandidate(candidate));
+      socket.on("user-left", (leftSocketId: string) => {
+        peerConnections.current.get(leftSocketId)?.close();
+        peerConnections.current.delete(leftSocketId);
+        setRemoteStreams((prev) => {
+          const updated = new Map(prev);
+          updated.delete(leftSocketId);
+          return updated;
+        });
+        setUserNames((prev) => {
+          const updated = new Map(prev);
+          updated.delete(leftSocketId);
+          return updated;
+        });
+      });
+
+      socket.on("disconnect", () => {
+        peerConnections.current.forEach((pc) => pc.close());
+        peerConnections.current.clear();
+        setRemoteStreams(new Map());
+        setUserNames(new Map());
+        emailToSocket.current.clear();
       });
     };
 
@@ -95,32 +207,9 @@ const VideoCall: React.FC<Props> = ({ roomId }) => {
       peerConnections.current.forEach((pc) => pc.close());
       peerConnections.current.clear();
       socket.disconnect();
+      localStreamRef.current?.getTracks().forEach((track) => track.stop());
     };
   }, [roomId]);
-
-  const createPeerConnection = (userId: string) => {
-    const pc = new RTCPeerConnection(ICE_SERVERS);
-
-    pc.onicecandidate = (event) => {
-      if (event.candidate) {
-        socket.emit("ice-candidate", {
-          to: userId,
-          candidate: event.candidate,
-        });
-      }
-    };
-
-    pc.ontrack = (event) => {
-      setRemoteStreams((prev) => {
-        const newMap = new Map(prev);
-        newMap.set(userId, event.streams[0]);
-        return newMap;
-      });
-    };
-
-    peerConnections.current.set(userId, pc);
-    return pc;
-  };
 
   const toggleMic = async () => {
     if (!localStreamRef.current) return;
@@ -154,6 +243,7 @@ const VideoCall: React.FC<Props> = ({ roomId }) => {
       }
     }
   };
+
 
   const toggleCamera = async () => {
     if (isCameraOn) {
@@ -197,25 +287,15 @@ const VideoCall: React.FC<Props> = ({ roomId }) => {
       }
     }
   };
-
-  const endCall = () => {
-    peerConnections.current.forEach((pc) => pc.close());
-    peerConnections.current.clear();
-
-    localStreamRef.current?.getTracks().forEach((track) => track.stop());
-    if (localVideoRef.current) localVideoRef.current.srcObject = null;
-    setRemoteStreams(new Map());
-    socket.disconnect();
-  };
+  
+  const endCall = () => {};
 
   return (
     <div className="w-full h-full flex-1 flex justify-center align-middle flex-col pb-5">
       <div className="flex flex-1 w-full items-center justify-center gap-6 px-4">
         <div className="grid grid-flow-col items-center">
           <div className="relative">
-            <span className="absolute top-2 left-4 text-white">
-              {user?.name}
-            </span>
+            <span className="absolute top-2 left-4 text-white">{user?.name}</span>
             <video
               ref={localVideoRef}
               autoPlay
@@ -227,11 +307,14 @@ const VideoCall: React.FC<Props> = ({ roomId }) => {
         </div>
         {[...remoteStreams.entries()].map(([userId, stream]) => (
           <div key={userId} className="relative">
-            <span className="absolute top-2 left-4 text-white">{userId}</span>
+            <span className="absolute top-2 left-4 text-white">
+              {userNames.get(userId) ?? userId}
+            </span>
             <video
               autoPlay
               playsInline
-              className="object-cover rounded-xl bg-black"
+              muted
+              className="object-cover rounded-xl bg-black w-[400px] h-[300px]"
               ref={(video) => {
                 if (video && !video.srcObject) video.srcObject = stream;
               }}
@@ -239,45 +322,29 @@ const VideoCall: React.FC<Props> = ({ roomId }) => {
           </div>
         ))}
       </div>
-
       <div className="bg-white p-2 md:p-4 rounded-2xl flex flex-col md:flex-row items-center justify-between w-[80%] mx-auto shadow-md">
         {user?.name && (
           <div className="hidden md:flex items-center gap-3 text-md text-gray-700 mb-3 md:mb-0">
             <span>
-              {new Date().toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
+              {new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
             </span>
             <div className="w-px h-5 bg-gray-900 mx-2" />
-            <span className="font-medium text-sm max-w-[230px]">
-              {meetingId}
-            </span>
+            <span className="font-medium text-sm max-w-[230px]">{meetingId}</span>
           </div>
         )}
-
         <div className="flex gap-5">
           <button
             onClick={toggleMic}
             className={`p-3 rounded-full shadow transition-colors duration-200 ${
-              isMicOn
-                ? "bg-green-100 hover:bg-green-200"
-                : "bg-gray-200 hover:bg-gray-300"
+              isMicOn ? "bg-green-100 hover:bg-green-200" : "bg-gray-200 hover:bg-gray-300"
             }`}
           >
-            <MicrophoneIcon
-              className={`w-6 h-6 ${
-                isMicOn ? "text-green-600" : "text-gray-600"
-              }`}
-            />
+            <MicrophoneIcon className={`w-6 h-6 ${isMicOn ? "text-green-600" : "text-gray-600"}`} />
           </button>
-
           <button
             onClick={toggleCamera}
             className={`p-3 rounded-full shadow transition-colors duration-200 ${
-              isCameraOn
-                ? "bg-blue-100 hover:bg-blue-200"
-                : "bg-gray-200 hover:bg-gray-300"
+              isCameraOn ? "bg-blue-100 hover:bg-blue-200" : "bg-gray-200 hover:bg-gray-300"
             }`}
           >
             {isCameraOn ? (
@@ -286,7 +353,6 @@ const VideoCall: React.FC<Props> = ({ roomId }) => {
               <VideoCameraSlashIcon className="w-6 h-6 text-gray-600" />
             )}
           </button>
-
           <button
             onClick={endCall}
             className="p-3 rounded-full bg-red-100 hover:bg-red-200 shadow transition-colors duration-200"

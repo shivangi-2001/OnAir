@@ -25,5 +25,5 @@ export const Layout = ({ children }: LayoutProps) => {
     );
   }
 
-  return user ? <>{children}</> : <Navigate to="/signin" />;
+  return user?.email ? <>{children}</> : <Navigate to="/signin" />;
 };

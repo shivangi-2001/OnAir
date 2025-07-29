@@ -26,7 +26,6 @@ const images = [
 
 const Index = () => {
   return (
-    <Layout>
       <div className="relative w-full h-screen bg-brand-50/50 overflow-hidden">
       {/* Navbar (absolute at top) */}
       <div className="absolute top-0 left-0 w-full z-10">
@@ -54,7 +53,6 @@ const Index = () => {
         </div>
       </div>
     </div>
-    </Layout>
   );
 };
 
