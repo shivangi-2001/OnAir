@@ -1,0 +1,469 @@
+[
+    {
+        "index":10,
+        "name_of_timezone": "Azores Standard Time",
+        "time": "(GMT-01:00) Azores",
+        "iana_timezone": "Atlantic/Azores"
+    },
+    {
+        "index":12,
+        "name_of_timezone": "Cape Verde Standard Time",
+        "time":  "(GMT-01:00) Cape Verde Islands",
+        "iana_timezone": "Atlantic/Cape_Verde"
+    },
+    {
+        "index":43,
+        "name_of_timezone": "Mid-Atlantic Standard Time",
+        "time":  "(GMT-02:00) Mid-Atlantic",
+        "iana_timezone": "Atlantic/South_Georgia"
+    },
+    {
+        "index":27,
+        "name_of_timezone": "E. South America Standard Time",
+        "time": "(GMT-03:00) Brasilia",
+        "iana_timezone": "America/Sao_Paulo"
+    },
+    {
+        "index":58,
+        "name_of_timezone": "SA Eastern Standard Time",
+        "time": "(GMT-03:00) Buenos Aires, Georgetown",
+        "iana_timezone": " America/Argentina/Buenos_Aires"
+    },
+    {
+        "index":35,
+        "name_of_timezone": "Greenland Standard Time",
+        "time": "(GMT-03:00) Greenland",
+        "iana_timezone": " America/Godthab"
+    },
+    {
+        "index":51,
+        "name_of_timezone": "Newfoundland Standard Time",
+        "time": "(GMT-03:30) Newfoundland and Labrador",
+        "iana_timezone": " America/St_Johns"
+    },
+    {
+        "index":6,
+        "name_of_timezone": "Atlantic Standard Time",
+        "time": "(GMT-04:00) Atlantic Time (Canada) ",
+        "iana_timezone": "America/Halifax"
+    },
+    {
+        "index":60,
+        "name_of_timezone": "SA Western Standard Time",
+        "time": "(GMT-04:00) Caracas, La Paz ",
+        "iana_timezone": "America/La_Paz"
+    },
+    {
+        "index":17,
+        "name_of_timezone": "Central Brazilian Standard Time",
+        "time": "(GMT-04:00) Manaus ",
+        "iana_timezone": "America/Cuiaba"
+    },
+    {
+        "index":54,
+        "name_of_timezone": "Pacific SA Standard Time",
+        "time": "(GMT-04:00) Santiago ",
+        "iana_timezone": "America/Santiago"
+    },
+    {
+        "index":59,
+        "name_of_timezone": "SA Pacific Standard Time",
+        "time": "(GMT-05:00) Bogota, Lima, Quito ",
+        "iana_timezone": "America/Bogota"
+    },
+    {
+        "index":28,
+        "name_of_timezone": "Eastern Standard Time",
+        "time": "(GMT-05:00) Eastern Time (US and Canada) ",
+        "iana_timezone": "America/New_York"
+    },
+    {
+        "index":70,
+        "name_of_timezone": "US Eastern Standard Time",
+        "time": "(GMT-05:00) Indiana (East) ",
+        "iana_timezone": "America/Indiana/Indianapolis"
+    },
+    {
+        "index":15,
+        "name_of_timezone": "Central America Standard Time",
+        "time": "(GMT-06:00) Central America ",
+        "iana_timezone": "America/Costa_Rica"
+    },
+    {
+        "index":21,
+        "name_of_timezone": "Central Standard Time",
+        "time": "(GMT-06:00) Central Time (US and Canada) ",
+        "iana_timezone": "America/Chicago"
+    },
+    {
+        "index":22,
+        "name_of_timezone": "Central Standard Time",
+        "time": "(Mexico) (GMT-06:00) Guadalajara, Mexico City, Monterrey ",
+        "iana_timezone": "America/Monterrey"
+    },
+    {
+        "index":11,
+        "name_of_timezone": "Canada Central Standard Time",
+        "time": "(GMT-06:00) Saskatchewan ",
+        "iana_timezone": "America/Edmonton"
+    },
+    {
+        "index":71,
+        "name_of_timezone": "US Mountain Standard Time",
+        "time": "(GMT-07:00) Arizona ",
+        "iana_timezone": "America/Phoenix"
+    },
+    {
+        "index":45,
+        "name_of_timezone": "Mountain Standard Time",
+        "time": "(Mexico) (GMT-07:00) Chihuahua, La Paz, Mazatlan ",
+        "iana_timezone": "America/Chihuahua"
+    },
+    {
+        "index":44,
+        "name_of_timezone": "Mountain Standard Time",
+        "time": "(GMT-07:00) Mountain Time (US and Canada) ",
+        "iana_timezone": "America/Denver"
+    },
+    {
+        "index":55,
+        "name_of_timezone": "Pacific Standard Time",
+        "time": "(GMT-08:00) Pacific Time (US and Canada); Tijuana ",
+        "iana_timezone": "America/Tijuana"
+    },
+    {
+        "index":2,
+        "name_of_timezone": "Alaskan Standard Time",
+        "time": "(GMT-09:00) Alaska ",
+        "iana_timezone": "America/Anchorage"
+    },
+    {
+        "index":38,
+        "name_of_timezone": "Hawaiian Standard Time",
+        "time": "(GMT-10:00) Hawaii ",
+        "iana_timezone": "Pacific/Honolulu"
+    },
+    {
+        "index":61,
+        "name_of_timezone": "Samoa Standard Time",
+        "time": "(GMT-11:00) Midway Island, Samoa ",
+        "iana_timezone": "Pacific/Apia"
+    },
+    
+    {
+        "index":36,
+        "name_of_timezone": "Greenwich Standard Time",
+        "time": "(GMT) Casablanca, Monrovia ",
+        "iana_timezone": "Africa/Monrovia"
+    },
+    {
+        "index":34,
+        "name_of_timezone": "GMT Standard Time",
+        "time": "(GMT) Greenwich Mean Time : Dublin, Edinburgh, Lisbon, London",
+        "iana_timezone":"Europe/London"
+        },
+    {
+        "index":75,
+        "name_of_timezone": "W. Europe Standard Time",
+        "time": "(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna",
+        "iana_timezone":"Europe/Berlin"
+        },
+    {
+        "index":18,
+        "name_of_timezone": "Central Europe Standard Time",
+        "time": "(GMT+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague",
+        "iana_timezone":"Europe/Belgrade"
+        },
+    {
+        "index":56,
+        "name_of_timezone": "Romance Standard Time",
+        "time": "(GMT+01:00) Brussels, Copenhagen, Madrid, Paris",
+        "iana_timezone":"Europe/Paris"
+        },
+    {
+        "index":19,
+        "name_of_timezone": "Central European Standard Time",
+        "time": "(GMT+01:00) Sarajevo, Skopje, Warsaw, Zagreb",
+        "iana_timezone":"Europe/Belgrade"
+        },
+    {
+        "index":74,
+        "name_of_timezone": "W. Central Africa Standard Time",
+        "time": "(GMT+01:00) West Central Africa",
+        "iana_timezone":"Africa/Lagos"
+        },
+    {
+        "index":37,
+        "name_of_timezone": "GTB Standard Time",
+        "time": "(GMT+02:00) Athens, Bucharest, Istanbul",
+        "iana_timezone":"Europe/Istanbul"
+        },
+    {
+        "index":29,
+        "name_of_timezone": "Egypt Standard Time",
+        "time": "(GMT+02:00) Cairo",
+        "iana_timezone":"Africa/Cairo"
+        },
+    {
+        "index":64,
+        "name_of_timezone": "South Africa Standard Time",
+        "time": "(GMT+02:00) Harare, Pretoria",
+        "iana_timezone":"Africa/Harare"
+        },
+    {
+        "index":32,
+        "name_of_timezone": "FLE Standard Time",
+        "time": "(GMT+02:00) Helsinki, Kiev, Riga, Sofia, Tallinn, Vilnius",
+        "iana_timezone":"Europe/Riga"
+        },
+    {
+        "index":41,
+        "name_of_timezone": "Israel Standard Time",
+        "time": "(GMT+02:00) Jerusalem",
+        "iana_timezone":"Asia/Jerusalem"
+        },
+    {
+        "index":26,
+        "name_of_timezone": "E. Europe Standard Time",
+        "time": "(GMT+02:00) Minsk",
+        "iana_timezone":"Europe/Minsk"
+    },
+    {
+        "index":48,
+        "name_of_timezone": "Namibia Standard Time ",
+        "time":"(GMT+02:00) Windhoek",
+        "iana_timezone":"Africa/Windhoek"
+    },
+    {
+        "index": 5,
+        "name_of_timezone": "Arabic Standard Time",
+        "time": "(GMT+03:00) Baghdad",
+        "iana_timezone":"Asia/Baghdad"
+    },
+    {
+        "index": 3,
+        "name_of_timezone": "Arab Standard Time (GMT+03:00) Kuwait, Riyadh",
+        "iana_timezone":"Asia/Kuwait"
+    },
+    {
+        "index":57,
+        "name_of_timezone": "Russian Standard Time (GMT+03:00) Moscow, St. Petersburg, Volgograd",
+        "iana_timezone":"Europe/Moscow"
+    },
+    {
+        "index":24,
+        "name_of_timezone": "E. Africa Standard Time",
+        "time": "(GMT+03:00) Nairobi",
+        "iana_timezone":"Africa/Nairobi"
+    },
+    {
+        "index":40,
+        "name_of_timezone": "Iran Standard Time",
+        "time": "(GMT+03:30) Tehran",
+        "iana_timezone":"Asia/Tehran"
+    },
+    {
+        "index": 4,
+        "name_of_timezone": "Arabian Standard Time",
+        "time": "(GMT+04:00) Abu Dhabi, Muscat",
+        "iana_timezone":"Asia/Muscat"
+    },
+    {
+        "index": 9,
+        "name_of_timezone": "Azerbaijan Standard Time",
+        "time": "(GMT+04:00) Baku",
+        "iana_timezone":"Asia/Baku"
+    },
+    {
+        "index":33,
+        "name_of_timezone": "Georgian Standard Time",
+        "time": "(GMT+04:00) Tblisi",
+        "iana_timezone":"Asia/Tbilisi"
+    },
+    {
+        "index":13, 
+        "name_of_timezone": "Caucasus Standard Time",
+        "time": "(GMT+04:00) Yerevan",
+        "iana_timezone": "Asia/Yerevan"
+    },
+    {
+        "index": 1, 
+        "name_of_timezone": "Afghanistan Standard Time",
+        "time": "(GMT+04:30) Kabul",
+        "iana_timezone": "Asia/Kabul"
+    },
+    {
+        "index":30, 
+        "name_of_timezone": "Ekaterinburg Standard Time",
+        "time": "(GMT+05:00) Ekaterinburg",
+        "iana_timezone": "Asia/Yekaterinburg"
+    },
+    {
+        "index":76, 
+        "name_of_timezone": "West Asia Standard Time",
+        "time": "(GMT+05:00) Islamabad, Karachi, Tashkent",
+        "iana_timezone": "Asia/Tashkent"
+    },
+    {
+        "index":39, 
+        "name_of_timezone": "India Standard Time",
+        "time": "(GMT+05:30) Chennai, Kolkata, Mumbai, New Delhi",
+        "iana_timezone": "Asia/Calcutta"
+    },
+    {
+        "index":49, 
+        "name_of_timezone": "Nepal Standard Time",
+        "time": "(GMT+05:45) Kathmandu",
+        "iana_timezone": "Asia/Kathmandu"
+    },
+    {
+        "index":47, 
+        "name_of_timezone": "N. Central Asia Standard Time",
+        "time": "(GMT+06:00) Almaty, Novosibirsk",
+        "iana_timezone": "Asia/Novosibirsk"
+    },
+    {
+        "index":16, 
+        "name_of_timezone": "Central Asia Standard Time",
+        "time": "(GMT+06:00) Astana, Dhaka",
+        "iana_timezone": "Asia/Almaty"
+    },
+    {
+        "index":65, 
+        "name_of_timezone": "Sri Lanka Standard Time",
+        "time": "(GMT+06:00) Sri Jayawardenepura",
+        "iana_timezone": "Asia/Colombo"
+    },
+    {
+        "index":46, 
+        "name_of_timezone": "Myanmar Standard Time",
+        "time": "(GMT+06:30) Yangon (Rangoon)",
+        "iana_timezone": "Asia/Rangoon"
+    },
+    {
+        "index":62, 
+        "name_of_timezone": "SE Asia Standard Time",
+        "time": "(GMT+07:00) Bangkok, Hanoi, Jakarta",
+        "iana_timezone": "Asia/Bangkok"
+    },
+    {
+        "index":53, 
+        "name_of_timezone": "North Asia Standard Time",
+        "time": "(GMT+07:00) Krasnoyarsk",
+        "iana_timezone": "Asia/Krasnoyarsk"
+    },
+    {
+        "index":23, 
+        "name_of_timezone": "China Standard Time",
+        "time": "(GMT+08:00) Beijing, Chongqing, Hong Kong SAR, Urumqi",
+        "iana_timezone": "Asia/Shanghai"
+    },
+    {
+        "index":52, 
+        "name_of_timezone": "North Asia East Standard Time",
+        "time": "(GMT+08:00) Irkutsk, Ulaanbaatar",
+        "iana_timezone": "Asia/Irkutsk"
+    },
+    {
+        "index":63, 
+        "name_of_timezone": "Singapore Standard Time",
+        "time": "(GMT+08:00) Kuala Lumpur, Singapore",
+        "iana_timezone": "Asia/Singapore"
+    },
+    {
+        "index":73, 
+        "name_of_timezone": "W. Australia Standard Time",
+        "time": "(GMT+08:00) Perth ",
+        "iana_timezone":"Australia/Perth"
+    },
+    {
+        "index":66, 
+        "name_of_timezone": "Taipei Standard Time",
+        "time": "(GMT+08:00) Taipei ",
+        "iana_timezone":"Asia/Taipei"
+    },
+    {
+        "index":68, 
+        "name_of_timezone": "Tokyo Standard Time",
+        "time": "(GMT+09:00) Osaka, Sapporo, Tokyo",
+        "iana_timezone": "Asia/Tokyo"
+    },
+    {
+        "index":42, 
+        "name_of_timezone": "Korea Standard Time",
+        "time": "(GMT+09:00) Seoul",
+        "iana_timezone": "Asia/Seoul"
+    },
+    {
+        "index":78, 
+        "name_of_timezone": "Yakutsk Standard Time",
+        "time": "(GMT+09:00) Yakutsk",
+        "iana_timezone": "Asia/Yakutsk"
+    },
+    {
+        "index":14, 
+        "name_of_timezone": "Cen. Australia Standard Time",
+        "time": "(GMT+09:30) Adelaide",
+        "iana_timezone": "Australia/Adelaide"
+    },
+    {
+        "index":7, 
+        "name_of_timezone": "AUS Central Standard Time",
+        "time": "(GMT+09:30) Darwin",
+        "iana_timezone": "Australia/Darwin"
+    },
+    {
+        "index":25, 
+        "name_of_timezone": "E. Australia Standard Time",
+        "time": "(GMT+10:00) Brisbane",
+        "iana_timezone": "Australia/Brisbane"
+    },
+    {
+        "index":8, 
+        "name_of_timezone": "AUS Eastern Standard Time",
+        "time": "(GMT+10:00) Canberra, Melbourne, Sydney",
+        "iana_timezone": "Australia/Sydney"
+    },
+    {
+        "index":77, 
+        "name_of_timezone": "West Pacific Standard Time",
+        "time": "(GMT+10:00) Guam, Port Moresby",
+        "iana_timezone": "Pacific/Guam"
+    },
+    {
+        "index":67, 
+        "name_of_timezone": "Tasmania Standard Time",
+        "time": "(GMT+10:00) Hobart",
+        "iana_timezone": "Australia/Hobart"
+    },
+    {
+        "index":72, 
+        "name_of_timezone": "Vladivostok Standard Time",
+        "time": "(GMT+10:00) Vladivostok ",
+        "iana_timezone":"Asia/Vladivostok"
+    },
+    {
+        "index":20, 
+        "name_of_timezone": "Central Pacific Standard Time",
+        "time": "(GMT+11:00) Magadan, Solomon Islands, New Caledonia",
+        "iana_timezone": "Pacific/Guadalcanal"
+    },
+    {
+        "index":50, 
+        "name_of_timezone": "New Zealand Standard Time",
+        "time": "(GMT+12:00) Auckland, Wellington",
+        "iana_timezone": "Pacific/Auckland"
+    },
+    {
+        "index":31, 
+        "name_of_timezone": "Fiji Standard Time",
+        "time": "(GMT+12:00) Fiji Islands, Kamchatka, Marshall Islands",
+        "iana_timezone": "Pacific/Fiji"
+    },
+    {
+        "index":69, 
+        "name_of_timezone": "Tonga Standard Time",
+        "time": "(GMT+13:00) Nuku'alofa",
+        "iana_timezone": "Pacific/Tongatap"
+    }
+]
